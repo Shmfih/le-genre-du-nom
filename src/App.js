@@ -1,26 +1,19 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import './App.css'
+import MainPage from './containers/MainPage'
+require('dotenv').config()
 
-function App() {
+function App () {
+  console.clear()
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='App'>
+      <div className='header'>
+        <h4>Quel genre de ce nom?</h4>
+      </div>
+      <MainPage />
+      {/* <div className='footer'>Copyright © 2020 by Huynh Thien Tan.</div> */}
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

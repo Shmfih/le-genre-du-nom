@@ -22,7 +22,7 @@ function FinalResult (props) {
   return (
     <div
       className='container content-container'
-      style={{ marginBottom: '100px' }}
+      style={{ marginBottom: '100px', textOverflow: 'auto' }}
     >
       <div className='row'>
         <h5>

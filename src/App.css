@@ -5,9 +5,9 @@ body,
   height: 100%;
 }
 
-/* body {
+body {
   overflow: hidden;
-} */
+}
 
 .App {
   text-align: center;
@@ -27,6 +27,10 @@ body,
 
 .App-link {
   color: #61dafb;
+}
+
+.header {
+  box-shadow: 0px 0px 10px 5px #aaaaaa;
 }
 
 .header,
@@ -69,7 +73,7 @@ footer {
 }
 
 .content-container {
-  overflow: hidden;
+  /* overflow: hidden; */
   margin-top: 30px;
   /* margin-bottom: 100px; */
 }
@@ -147,10 +151,10 @@ footer {
   position: fixed; /* Stay in place */
   z-index: 1; /* Sit on top */
   left: 0;
-  top: 0;
+  top: 100px;
   width: 100%; /* Full width */
   height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
+  overflow: hidden; /* Enable scroll if needed */
   /* background-color: rgb(0, 0, 0);
   background-color: rgba(0, 0, 0, 0.4); */
 }
@@ -177,5 +181,13 @@ footer {
   .card-wrapper {
     /* width: 80%; */
     height: 70%;
+  }
+
+  .card-item {
+    padding-top: 30%;
+  }
+
+  body {
+    overflow: auto;
   }
 }

@@ -14,52 +14,90 @@ class TestArea extends PureComponent {
     this.state = {
       final: false,
       currentQuestion: 0,
-      totalCorrect: 0,
-      totalWrong: 0,
+      // totalCorrect: 0,
+      // totalWrong: 0,
       showMeTheMeaning: false,
       showAnswer: false,
-      result: []
+      result: [],
+      moveLeftFunc: null,
+      moveRightFunc: null
     }
   }
 
+  componentDidMount () {
+    document.addEventListener('keydown', e => {
+      const { currentQuestion } = this.state
+      const { totalQuestion } = this.props
+      console.log(currentQuestion, totalQuestion)
+      switch (e.keyCode) {
+        case 37:
+          // right arrow
+          if (currentQuestion < totalQuestion) {
+            this.checkAnswer('m')
+            this.setState({ showAnswer: true, currentAnswer: 'm' })
+          }
+          break
+        // case 38:
+        //   alert('up')
+        //   break
+        case 39:
+          // right arrow
+          if (currentQuestion < totalQuestion) {
+            this.checkAnswer('f')
+            this.setState({ showAnswer: true, currentAnswer: 'f' })
+          }
+          break
+        // case 40:
+        //   alert('down')
+        //   break
+      }
+    })
+  }
+
+  componentWillUnmount () {
+    document.removeEventListener('keydown', this, false)
+  }
   checkAnswer = async ans => {
-    const { currentQuestion, result, totalCorrect, totalWrong } = this.state
-    const { questionList } = this.props
+    const { currentQuestion, result } = this.state
+    const { questionList, totalQuestion } = this.props
     const questionContent = questionList[currentQuestion]
     const newResult = [...result]
-    if (ans === questionContent['genre']) {
-      newResult.push({
-        questionNum: currentQuestion,
-        result: 'Correct',
-        question: questionContent,
-        userAnswer: ans
-      })
+    console.log(result)
+    if (currentQuestion < totalQuestion) {
+      if (ans === questionContent['genre']) {
+        newResult.push({
+          questionNum: currentQuestion,
+          result: 'Correct',
+          question: questionContent,
+          userAnswer: ans
+        })
 
-      this.setState({
-        result: newResult,
-        totalCorrect: totalCorrect + 1
-        // showAnswer: true
-      })
-      await setTimeout(() => {
-        this.moveNextQuestion()
-      }, 600)
-    } else {
-      newResult.push({
-        questionNum: currentQuestion,
-        result: 'Wrong',
-        question: questionContent,
-        userAnswer: ans
-      })
+        this.setState({
+          result: newResult
+          // totalCorrect: totalCorrect + 1
+          // showAnswer: true
+        })
+        await setTimeout(() => {
+          this.moveNextQuestion()
+        }, 600)
+      } else {
+        newResult.push({
+          questionNum: currentQuestion,
+          result: 'Wrong',
+          question: questionContent,
+          userAnswer: ans
+        })
 
-      this.setState({
-        result: newResult,
-        totalWrong: totalWrong + 1,
-        currentAnswer: ''
-        // showAnswer: true
-      })
-      await setTimeout(() => {
-        this.moveNextQuestion()
-      }, 600)
+        this.setState({
+          result: newResult,
+          // totalWrong: totalWrong + 1,
+          currentAnswer: ''
+          // showAnswer: true
+        })
+        await setTimeout(() => {
+          this.moveNextQuestion()
+        }, 600)
+      }
     }
   }
 
@@ -88,7 +126,11 @@ class TestArea extends PureComponent {
     } = this.state
     const { questionList, totalQuestion } = this.props
 
-    if (final) return <FinalResult result={result} />
+    if (final) {
+      document.removeEventListener('keydown', this, false)
+      return <FinalResult result={result} />
+    }
+
     const actionsStyles = {
       position: 'relative',
       alignItems: 'center',
@@ -98,6 +140,8 @@ class TestArea extends PureComponent {
     const cards = questionList.map(item => {
       return item['nom']
     })
+    // let moveLeftAction
+    // let moveRightAction
     return (
       <>
         {cards.length > 0 ? (
@@ -106,22 +150,26 @@ class TestArea extends PureComponent {
             style={{ display: showAnswer ? 'none' : 'inline-block' }}
           >
             <Swipeable
-              buttons={({ left, right }) => (
-                <div style={actionsStyles}>
-                  <div className='row' style={{ textAlign: 'center' }}>
-                    <div className='col-6'>
-                      <a className='round-button' onClick={left}>
-                        m
-                      </a>
-                    </div>
-                    <div className='col-6'>
-                      <a className='round-button' onClick={right}>
-                        f
-                      </a>
+              buttons={({ left, right }) => {
+                // Map Swipeable's action to variable
+                // this.setState()
+                return (
+                  <div style={actionsStyles}>
+                    <div className='row' style={{ textAlign: 'center' }}>
+                      <div className='col-6'>
+                        <a className='round-button' onClick={left}>
+                          m
+                        </a>
+                      </div>
+                      <div className='col-6'>
+                        <a className='round-button' onClick={right}>
+                          f
+                        </a>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )
+              }}
               onSwipe={ans => {
                 const userAns = ans === 'left' ? 'm' : 'f'
                 this.checkAnswer(userAns)
@@ -136,11 +184,9 @@ class TestArea extends PureComponent {
         )}
         <ModalResult
           show={showAnswer}
-          isCorrect={
-            currentAnswer == questionList[currentQuestion]['genre']
-              ? true
-              : false
-          }
+          questionNum={currentQuestion + 1}
+          totalQuestion={totalQuestion}
+          hideModal={() => this.setState({ showAnswer: false })}
         />
       </>
     )

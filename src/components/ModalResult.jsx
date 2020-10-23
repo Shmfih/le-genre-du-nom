@@ -5,16 +5,18 @@ import Correct from '../svg/correct.svg'
 
 class ModalResult extends PureComponent {
   render () {
-    const { show, isCorrect } = this.props
+    const { show, questionNum, totalQuestion, hideModal } = this.props
     // console.log(isCorrect)
     return (
       <div
         id='myModal'
         class='modal'
         style={{ display: show ? 'block' : 'none' }}
+        onClick={() => hideModal()}
       >
         <div class='modal-content'>
-          {isCorrect ? <img src={Correct} /> : <img src={Wrong} />}
+          <h2>{questionNum < totalQuestion ? questionNum : 'Finish'}</h2>
+          {/* {isCorrect ? <img src={Correct} /> : <img src={Wrong} />} */}
         </div>
       </div>
     )
